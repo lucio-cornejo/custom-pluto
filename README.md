@@ -23,7 +23,7 @@ Customize Julia's Pluto notebook's stlye and keyboard shortcuts.
   Implemented shortcut: `Alt+C`  (Non VS Code)
 
 - **Toggle live documentation**: \
-Implemented shortcut: `Ctrl+Alt+D`  (Non VS Code?)
+  Implemented shortcut: `Ctrl+Alt+D`  (Non VS Code?)
 
 - **Split cell**: \
   Implemented shortcut: `Ctrl+Alt+S`  (Non VS Code?)
@@ -35,9 +35,9 @@ Implemented shortcut: `Ctrl+Alt+D`  (Non VS Code?)
   Implemented shortcut: `Alt+Enter`  (Non VS Code)
 
 - **Move cell(s) up/down**: `Ctrl+Up` and `Ctrl+Down` \
-Suggested shortcut: `Alt+PageUp` and `Alt+PageDown`
+  Suggested shortcut: `Alt+PageUp` and `Alt+PageDown`
 
-- The following code seemed promising, but failed.
+  The following code seemed promising, but failed.
   Code cell swaping occurs, but after interacting
   with the notebook, the cells are 
   ```js
