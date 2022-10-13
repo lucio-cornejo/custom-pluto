@@ -53,7 +53,7 @@
     /*
       Style terminal output
     */
-    `pluto-log-dot-sizer { width: 50vw; }
+    `pluto-log-dot-sizer { width: 75vw; }
     pluto-log-dot {
       width: 100%;
       padding: 0.5rem;
@@ -197,10 +197,11 @@
   /*
     Multiple key presses
   */
-  var keyPress = {};
+  window["keyPress"] = {};
 
   document.addEventListener("keyup", function(evt) {
-    delete keyPress[evt.key]
+    // delete keyPress[evt.key]
+    keyPress = {}; return;
   });
 
   document.addEventListener("keydown", function (evt) {
@@ -289,11 +290,11 @@
           oldLine = oldLine.parentElement 
         }
 
-        // Insert ; in ordert to partly solve the issue
+        // Insert ;;; in order to partly solve the issue
         // where the second line of the new cell created
         // is a concatenation of the first two lines copied
         // in order to be inserted into new cell.
-        oldLine.appendChild(document.createTextNode(";"));
+        oldLine.appendChild(document.createTextNode(";;"));
 
         const oldCell = getPlutoCell(getSelection().anchorNode);
         
@@ -307,7 +308,7 @@
         
         // Separate code lines from which will be moved
         let index;
-        for(index=0; index<oldLines.length; index++) {
+        for(index=0; index < oldLines.length; index++) {
           if (oldLine === oldLines[index]) { break; }
         }
         
@@ -323,9 +324,30 @@
         newCell.appendChild(firstLine);
         newCell.appendChild(lastLine);
 
-        newLines.forEach(line => { 
-          newCell.insertBefore(line, lastLine)
-        });
+        newLines.forEach(line => newCell.insertBefore(line, lastLine));
+
+        // Remove ;; from second code line and fix cell splitting issue
+        const nodes = [...newCell.children[1].childNodes];
+
+        index = 0;
+        for(index; index < nodes.length; index++) {
+          if (
+            nodes[index].nodeValue &&
+            [";;", ";;\t"].includes(nodes[index].nodeValue)
+          ) { break; }
+        }
+
+        const replacement = nodes.slice(index + 1, nodes.length)
+        nodes[index].remove();
+
+        const replacementContainer = nodes[0].parentElement.cloneNode(false);
+        replacement.forEach(line => replacementContainer.appendChild(line));
+        nodes[0].parentElement.after(replacementContainer);
+
+        await new Promise(r => setTimeout(r, 123));
+        replacementContainer.remove();
+        // replacementContainer.firstElementChild.innerText = 
+          // "  " + replacementContainer.firstElementChild.innerText;
       })()
     }
   });
