@@ -16,6 +16,9 @@ Customize Julia's Pluto notebook's stlye and keyboard shortcuts.
 - **Wrap in `md""" ... """`** \
   Implemented shortcut: `Ctrl+Alt+M`
 
+- **Toggle light/dark mode**: \
+  Added a button in Pluto notebook page.
+
 - **Toggle cell's input visibilty**: \
   Implemented shortcut: `Alt+C`  (Non VS Code)
 
