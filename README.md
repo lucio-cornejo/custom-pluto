@@ -82,8 +82,9 @@ following JavaScript function:
   keysAction(["Control", "Alt"], "b", evt.key, "begin", "end");
   ```
 
-  Such code must be inserted in the appropriate context.
-  A complete example of that can be found [here](.)
+  Such code must be inserted in the appropriate context ...
+  a complete example can be found 
+  [here](https://github.com/lucio-cornejo/custom-pluto/blob/main/custom-Pluto.js#L216).
 
 - Due to the tedious process of mapping custom keyboard
 shortcuts (from VS Code, Atom, Vim or whatever) to Pluto,
