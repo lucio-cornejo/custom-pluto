@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  Customize your Pluto notebook
-// @author       You
+// @author       Lucio Cornejo
 // @match        *localhost:1234/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=tampermonkey.net
 // @grant        none
@@ -11,6 +11,11 @@
 
 (function() {
   'use strict';
+  // Apply customization to notebook
+  if (!document.querySelector("pluto-notebook")) {
+    return;
+  }
+  
   /*
     Custom styling
   */

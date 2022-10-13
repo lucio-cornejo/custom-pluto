@@ -7,13 +7,34 @@ Customize Julia's Pluto notebook's stlye and keyboard shortcuts.
 
 ## Implementation
 
+- **Wrap in `begin ... end`**: TBD \
+  Implemented shortcut: `Ctrl+Alt+B`
+
+- **Wrap in `let ... end`**: TBD \
+  Implemented shortcut: `Ctrl+Alt+L`
+
+- **Wrap in `md""" ... """`** \
+  Implemented shortcut: `Ctrl+Alt+M`
+
 - **Toggle cell's input visibilty**: \
   Implemented shortcut: `Alt+C`  (Non VS Code)
 
-- **Move cell(s) up/down**: `Ctrl+Up` and `Ctrl+Down` \
-  Suggested shortcut: `Alt+PageUp` and `Alt+PageDown`
+- **Toggle live documentation**: \
+Implemented shortcut: `Ctrl+Alt+D`  (Non VS Code?)
 
-  The following code seemed promising, but failed.
+- **Split cell**: \
+  Implemented shortcut: `Ctrl+Alt+S`  (Non VS Code?)
+
+- **Add cell above**: \
+  Implemented shortcut: `Ctrl+Shift+Enter`  (VS Code)
+
+- **Add cell without running**: \
+  Implemented shortcut: `Alt+Enter`  (Non VS Code)
+
+- **Move cell(s) up/down**: `Ctrl+Up` and `Ctrl+Down` \
+Suggested shortcut: `Alt+PageUp` and `Alt+PageDown`
+
+- The following code seemed promising, but failed.
   Code cell swaping occurs, but after interacting
   with the notebook, the cells are 
   ```js
@@ -33,27 +54,6 @@ Customize Julia's Pluto notebook's stlye and keyboard shortcuts.
     } catch (e) { }
   }
   ```
-
-- **Wrap in `begin ... end`**: TBD \
-  Implemented shortcut: `Ctrl+Alt+B`
-
-- **Wrap in `let ... end`**: TBD \
-  Implemented shortcut: `Ctrl+Alt+L`
-
-- **Wrap in `md""" ... """`** \
-  Implemented shortcut: `Ctrl+Alt+M`
-
-- **Add cell above**: \
-  Implemented shortcut: `Ctrl+Shift+Enter`  (VS Code)
-
-- **Add cell without running**: \
-  Implemented shortcut: `Alt+Enter`  (Non VS Code)
-
-- **Toggle live documentation**: \
-  Implemented shortcut: `Ctrl+Alt+D`  (Non VS Code?)
-
-- **Split cell**: \
-  Implemented shortcut: `Ctrl+Alt+S`  (Non VS Code?)
 
 ## Recommendation
 
