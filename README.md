@@ -89,6 +89,16 @@ following JavaScript function:
   a complete example can be found 
   [here](https://github.com/lucio-cornejo/custom-pluto/blob/main/custom-Pluto.js#L216).
 
+  You can get the `keyPressed.key` value of the key you want to use
+  via executing the following code in your browser console 
+  (press `Ctrl+Shift+J` to open it):
+
+  ```js
+  document.addEventListener("keydown", 
+    (evt) => console.log(`keyPressed.key: ${evt.key}`)
+  );
+  ```
+
 - Due to the tedious process of mapping custom keyboard
 shortcuts (from VS Code, Atom, Vim or whatever) to Pluto,
 a partial solution may be to run Pluto via:
