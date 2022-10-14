@@ -68,8 +68,8 @@ is inserted into the Pluto notebook via
 following JavaScript function:
   ```js
   keysAction(
-    initialKeys,  // Array of key.code values
-    lastKey,      // key.code value
+    initialKeys,  // Array of keyPressed.key values
+    lastKey,      // keyPressed.key value
     eventKey,     // event.key
     firstLine,    // Custom String
     lastLine      // Custom String
