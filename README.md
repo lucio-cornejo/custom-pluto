@@ -15,6 +15,9 @@ Customize Julia's Pluto notebook's stlye and keyboard shortcuts.
 
 - **Wrap in `let ... end`**: TBD \
   Implemented shortcut: `Ctrl+Alt+L`
+  
+- **Wrap in `with_terminal() do ... end`**: TBD \
+  Implemented shortcut: `Ctrl+Alt+T`
 
 - **Wrap in `md""" ... """`** \
   Implemented shortcut: `Ctrl+Alt+M`
