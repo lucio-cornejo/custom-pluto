@@ -21,6 +21,9 @@ Customize Julia's Pluto notebook's stlye and keyboard shortcuts.
 
 - **Wrap in `md""" ... """`** \
   Implemented shortcut: `Ctrl+Alt+M`
+  
+  - **Toggle every markdown cell's code visibilty**: \
+  Implemented shortcut: `Alt+M`  
 
 - **Toggle cell's input visibilty**: \
   Implemented shortcut: `Alt+C`  (Non VS Code)
