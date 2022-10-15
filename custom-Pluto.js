@@ -245,7 +245,7 @@
         // or has only the classes 
         // "show_input" and "code_folded", the
         // following code will toggle the
-        // visibility of the markdown cell.
+        // visibility of the markdown cell's code.
         cell.classList.toggle("show_input");
         cell.classList.toggle("code_folded");
         });
