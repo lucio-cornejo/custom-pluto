@@ -235,6 +235,23 @@
     keysAction(["Control", "Alt"], "m", evt.key, "md\"\"\"", "\"\"\"");
 
     /*
+      Toggle visibility of markdown cells: Alt+m
+    */
+    if (keyPress["Alt"] && "m" === evt.key) {
+      document.querySelectorAll(
+        "pluto-cell:has(pluto-output .markdown)"
+      ).forEach(cell => { 
+        // Even if the Pluto cell has no class,
+        // or has only the classes 
+        // "show_input" and "code_folded", the
+        // following code will toggle the
+        // visibility of the markdown cell.
+        cell.classList.toggle("show_input");
+        cell.classList.toggle("code_folded");
+        });
+    }
+
+    /*
       Toggle code cell visibility: Alt+c
     */
     if (keyPress["Alt"] && "c" === evt.key) {
