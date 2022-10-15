@@ -235,7 +235,7 @@
     keysAction(["Control", "Alt"], "m", evt.key, "md\"\"\"", "\"\"\"");
 
     /*
-      Toggle visibility of markdown cells: Alt+m
+      Toggle visibility of markdown cells' code: Alt+m
     */
     if (keyPress["Alt"] && "m" === evt.key) {
       document.querySelectorAll(
