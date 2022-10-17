@@ -7,6 +7,23 @@ Customize Julia's Pluto notebook's stlye and keyboard shortcuts.
 
 ## Implementation
 
+- [Tutorial](https://youtu.be/PrgwadXNs0U) for how to implement
+the Pluto changes from this project into your own Pluto notebooks.
+
+- For the Pluto changes implemented in this project,
+to be preserved into the exported HTML file(s) of your Pluto notebook, 
+rather than following the tutorial, execute this code in any cell of your Pluto notebook:
+
+```
+html"""
+<script
+	src="http://cdn.jsdelivr.net/gh/lucio-cornejo/custom-pluto/custom-Pluto.js">
+</script>
+"""
+```
+
+## New commands
+
 - **Toggle light/dark mode**: \
   Added a button in Pluto notebook page.
 
