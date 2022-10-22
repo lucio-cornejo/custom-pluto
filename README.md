@@ -17,7 +17,7 @@ rather than following the tutorial, execute this code in any cell of your Pluto 
 ```
 html"""
 <script
-	src="http://cdn.jsdelivr.net/gh/lucio-cornejo/custom-pluto/custom-Pluto.js">
+  src="https://cdn.jsdelivr.net/gh/lucio-cornejo/custom-pluto/custom-Pluto.js">
 </script>
 """
 ```
