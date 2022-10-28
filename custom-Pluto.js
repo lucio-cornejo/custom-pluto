@@ -29,7 +29,7 @@
     */
     `
     html, 
-    input, pluto-logs-container, img {
+    input, pluto-logs-container, img, .plot-container, .plotly {
       filter: invert(var(--theme));
     }\n` +
 
