@@ -204,10 +204,10 @@
     the keyup event is not registered
     in the browser tab for Pluto.
   */
-  window["lostKeyUp"] = false;
+  window["lostKeyUp"] = 0;
 
   document.addEventListener("keyup", function(evt) {
-    lostKeyUp = !lostKeyUp;
+    lostKeyUp = (lostKeyUp + 1)%2;
     // delete keyPress[evt.key]
     keyPress = {}; return;
   });
@@ -215,16 +215,16 @@
   document.addEventListener("keydown", function (evt) {
     // Avoid keydown event repetition due to holding key
     if (evt.repeat) return;
+    lostKeyUp = (lostKeyUp + 1)%2;
 
     // Case where there was a window change
     // and at least some keyup event did not
     // get registered in Pluto browser tab.
-    if (lostKeyUp) {
-      window["keyPress"] = {};
-      window["lostKeyUp"] = false;
+    if (!lostKeyUp) {
+      // window["keyPress"] = {};
+      // window["lostKeyUp"] = false;
     }
 
-    lostKeyUp = !lostKeyUp;
     keyPress[evt.key] = true;
 
     /*
