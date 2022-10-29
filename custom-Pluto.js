@@ -28,8 +28,11 @@
       Dark mode
     */
     `
-    html, 
-    input, pluto-logs-container, img, .plot-container, .plotly {
+    html {filter: invert(var(--theme)); }
+    /* Do not alter to dark mode */  
+    input, img,
+    pluto-logs-container,
+    .plot-container, .plotly {
       filter: invert(var(--theme));
     }\n` +
 
@@ -198,8 +201,16 @@
     Multiple key presses
   */
   window["keyPress"] = {};
+  
+  /*
+    When changing windows, sometimes 
+    the keyup event is not registered
+    in the browser tab for Pluto.
+  */
+  window["lostKeyUp"] = false;
 
   document.addEventListener("keyup", function(evt) {
+    lostKeyUp = !lostKeyUp;
     // delete keyPress[evt.key]
     keyPress = {}; return;
   });
@@ -207,7 +218,16 @@
   document.addEventListener("keydown", function (evt) {
     // Avoid keydown event repetition due to holding key
     if (evt.repeat) return;
-
+    
+    // Case where there was a window change
+    // and at least some keyup event did not
+    // get registered in Pluto browser tab.
+    if (lostKeyUp) { 
+      keyPress = {};
+      lostKeyUp = false;
+    }
+    
+    lostKeyUp = !lostKeyUp;
     keyPress[evt.key] = true;
 
     /*
