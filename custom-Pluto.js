@@ -217,7 +217,7 @@
     // Avoid keydown event repetition due to holding key
     if (evt.repeat) return;
 
-    alert("test");
+    window["keyPress"] = {};
     
     // Case where there was a window change
     // and at least some keyup event did not
