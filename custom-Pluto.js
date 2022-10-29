@@ -223,6 +223,7 @@
     // and at least some keyup event did not
     // get registered in Pluto browser tab.
     if (lostKeyUp) { 
+      console.log("lost!!;")
       keyPress = {};
       lostKeyUp = false;
     }
