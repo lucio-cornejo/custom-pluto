@@ -26,7 +26,7 @@
       Dark mode
     */
     `
-    html {filter: invert(var(--theme)); }
+    /* html {filter: invert(var(--theme)); } */
     /* Do not alter to dark mode */  
     input, img,
     pluto-logs-container,
