@@ -218,6 +218,8 @@
   document.addEventListener("keydown", function (evt) {
     // Avoid keydown event repetition due to holding key
     if (evt.repeat) return;
+
+    console.log("test");
     
     // Case where there was a window change
     // and at least some keyup event did not
