@@ -216,13 +216,10 @@
     // Avoid keydown event repetition due to holding key
     if (evt.repeat) return;
 
-    window["keyPress"] = {};
-
     // Case where there was a window change
     // and at least some keyup event did not
     // get registered in Pluto browser tab.
     if (lostKeyUp) {
-      console.log("lost!!");
       window["keyPress"] = {};
       window["lostKeyUp"] = false;
     }
