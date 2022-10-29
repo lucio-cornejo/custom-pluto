@@ -21,18 +21,22 @@
   document.documentElement.style.cssText = "--theme: 1";
 
   const customStyle = document.createElement("style")
+
+  `
+  /* html {filter: invert(var(--theme)); } */
+  /* Do not alter to dark mode */  
+  input, img,
+  pluto-logs-container,
+  .plot-container, .plotly {
+    filter: invert(var(--theme));
+  }\n`
+
+
   customStyle.innerHTML =
     /*
       Dark mode
-    */
-    `
-    /* html {filter: invert(var(--theme)); } */
-    /* Do not alter to dark mode */  
-    input, img,
-    pluto-logs-container,
-    .plot-container, .plotly {
-      filter: invert(var(--theme));
-    }\n` +
+    */   
+    "" +
 
     // Set tab size to 2
     ".cm-content { tab-size: 2 !important; }\n" +
