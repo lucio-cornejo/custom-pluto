@@ -13,7 +13,7 @@
   'use strict';
   // Apply customization to notebook
   if (!document.querySelector("pluto-notebook")) return;
-  
+
   /*
     Custom styling
   */
@@ -22,22 +22,17 @@
 
   const customStyle = document.createElement("style")
 
-  `
-  /* html {filter: invert(var(--theme)); } */
-  /* Do not alter to dark mode */  
-  input, img,
-  pluto-logs-container,
-  .plot-container, .plotly {
-    filter: invert(var(--theme));
-  }\n`
-
-
   customStyle.innerHTML =
     /*
       Dark mode
-    */   
-    "" +
-
+    */
+    "html {filter: invert(var(--theme)); }\n" +
+    // Do not alter to dark mode
+    `input, img,
+    pluto-logs-container,
+    .plot-container, .plotly {
+      filter: invert(var(--theme));
+    }\n` +
     // Set tab size to 2
     ".cm-content { tab-size: 2 !important; }\n" +
     /*
@@ -71,7 +66,7 @@
 
   document.head.appendChild(customStyle);
 
-  /* 
+  /*
     Add button to toggle light and dark mode
   */
   const toggleExport = document.querySelector("#at_the_top .toggle_export");
@@ -96,7 +91,7 @@
       ) + 1) % 2
     ))
   }
-  
+
   toggleExport.before(toggleTheme);
 
   /*
@@ -203,9 +198,9 @@
     Multiple key presses
   */
   window["keyPress"] = {};
-  
+
   /*
-    When changing windows, sometimes 
+    When changing windows, sometimes
     the keyup event is not registered
     in the browser tab for Pluto.
   */
@@ -222,16 +217,16 @@
     if (evt.repeat) return;
 
     window["keyPress"] = {};
-    
+
     // Case where there was a window change
     // and at least some keyup event did not
     // get registered in Pluto browser tab.
-    if (lostKeyUp) { 
+    if (lostKeyUp) {
       console.log("lost!!");
       window["keyPress"] = {};
       window["lostKeyUp"] = false;
     }
-    
+
     lostKeyUp = !lostKeyUp;
     keyPress[evt.key] = true;
 
@@ -265,9 +260,9 @@
     if (keyPress["Alt"] && "m" === evt.key) {
       document.querySelectorAll(
         "pluto-cell:has(pluto-output .markdown)"
-      ).forEach(cell => { 
+      ).forEach(cell => {
         // Even if the Pluto cell has no class,
-        // or has only the classes 
+        // or has only the classes
         // "show_input" and "code_folded", the
         // following code will toggle the
         // visibility of the markdown cell's code.
@@ -292,11 +287,11 @@
     */
     if (keyPress["Control"] && keyPress["Shift"] && "Enter" === evt.key) {
       getPlutoCell(getSelection().anchorNode).querySelector("button.add_cell.before").click();
-      
+
       // Reset object
       keyPress = {}; return;
     }
-    
+
     /*
       Add cell after: Alt+Enter
     */
@@ -306,7 +301,7 @@
       // Reset object
       keyPress = {}; return;
     }
-    
+
     /*
       Toggle live documentation: Control+Alt+d
     */
@@ -328,8 +323,8 @@
         // Get code line where mouse is located
         let oldLine = getSelection().anchorNode;
         while (!oldLine.classList) { oldLine = oldLine.parentElement }
-        while (!oldLine.classList.contains("cm-line")) { 
-          oldLine = oldLine.parentElement 
+        while (!oldLine.classList.contains("cm-line")) {
+          oldLine = oldLine.parentElement
         }
 
         // Insert ;;; in order to partly solve the issue
@@ -339,23 +334,23 @@
         oldLine.appendChild(document.createTextNode(";;"));
 
         const oldCell = getPlutoCell(getSelection().anchorNode);
-        
+
         // Create new cell
         oldCell.querySelectorAll("button")[4].click();
-        
+
         // Get lines of code in current cell
         const oldLines = Array.from(oldCell.querySelectorAll("div.cm-line"));
         const firstLine = oldLines[0].cloneNode(true);
         const lastLine = oldLines.at(-1).cloneNode(true);
-        
+
         // Separate code lines from which will be moved
         let index;
         for(index=0; index < oldLines.length; index++) {
           if (oldLine === oldLines[index]) { break; }
         }
-        
-        // Get code lines to move and 
-        // wrapper (begin ... end, for example) 
+
+        // Get code lines to move and
+        // wrapper (begin ... end, for example)
         // of cell to be splitted in two.
         const newLines = oldLines.slice(index, oldLines.length - 1);
 
@@ -388,7 +383,7 @@
 
         await new Promise(r => setTimeout(r, 123));
         replacementContainer.remove();
-        // replacementContainer.firstElementChild.innerText = 
+        // replacementContainer.firstElementChild.innerText =
           // "  " + replacementContainer.firstElementChild.innerText;
       })()
     }
