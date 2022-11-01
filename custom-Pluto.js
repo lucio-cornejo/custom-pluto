@@ -414,8 +414,6 @@
         await new Promise(r => setTimeout(r, 500));
         const newCell = oldCell.nextElementSibling;
       
-        console.log(oldCellCode, newCellCode);
-      
         // Update code in cells
         oldCell.querySelector('[role="textbox"]').innerHTML = 
           oldCellCode.map(line => `<div><span>${line}</span></div>`)
