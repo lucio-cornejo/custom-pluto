@@ -146,34 +146,6 @@
       codeText += "\n";
     });
     
-    function extractLineText(line) {
-      if (line.nodeName === "#text") return line.nodeValue;
-      
-      if (line.nodeName === "SPAN") {
-        // Case like <span><span>text</span></span> .
-        // Such HTML structure is sometimes triggered 
-        // automatically by Pluto for first and last cell lines.
-        if (line.classList.contains("cm-matchingBracket")) {
-          return extractLineText(line.firstChild);
-        }
-    
-        // Case where span elements are used to contain
-        // information about the code line, not the text itself.
-        if (line.childElementCount) return ""; 
-        
-        // Usual case: <span>text</span>
-        return line.innerText;
-      }
-    
-      // Case where the code text is inside a span element
-      // contained in a <pluto-variable-link> element.
-      if (line.nodeName === 'PLUTO-VARIABLE-LINK') {
-        return extractLineText(line.firstChild);
-      }
-      
-      return "";
-    }
-    
     codeText = codeText.split("\n");
     codeText.pop();
     return codeText;
@@ -185,7 +157,34 @@
       .join('');
     */
   }
+
+  function extractLineText(line) {
+    if (line.nodeName === "#text") return line.nodeValue;
+    
+    if (line.nodeName === "SPAN") {
+      // Case like <span><span>text</span></span> .
+      // Such HTML structure is sometimes triggered 
+      // automatically by Pluto for first and last cell lines.
+      if (line.classList.contains("cm-matchingBracket")) {
+        return extractLineText(line.firstChild);
+      }
   
+      // Case where span elements are used to contain
+      // information about the code line, not the text itself.
+      if (line.childElementCount) return ""; 
+      
+      // Usual case: <span>text</span>
+      return line.innerText;
+    }
+  
+    // Case where the code text is inside a span element
+    // contained in a <pluto-variable-link> element.
+    if (line.nodeName === 'PLUTO-VARIABLE-LINK') {
+      return extractLineText(line.firstChild);
+    }
+    
+    return "";
+  }
 
   /*
     When some keyboard two-keys combination is pressed.
@@ -374,73 +373,60 @@
       Split cell: Control+Alt+s
     */
     if (keyPress["Control"] && keyPress["Alt"] && "s" === evt.key) {
-      (async function() {
+      (async function () {
         // Get code line where mouse is located
         let oldLine = getSelection().anchorNode;
         while (!oldLine.classList) { oldLine = oldLine.parentElement }
         while (!oldLine.classList.contains("cm-line")) {
           oldLine = oldLine.parentElement
         }
-
-        // Insert ;;; in order to partly solve the issue
-        // where the second line of the new cell created
-        // is a concatenation of the first two lines copied
-        // in order to be inserted into new cell.
-        oldLine.appendChild(document.createTextNode(";;"));
-
+      
+        // Extract code text from selected line
+        let oldLineCode = "";
+        oldLine.childNodes.forEach(node => {
+          oldLineCode += extractLineText(node);
+        });
+      
+        oldLineCode;
+      
+        // Extract code text from selected cell
         const oldCell = getPlutoCell(getSelection().anchorNode);
-
+        let oldCellCode = extractCellCode(oldCell);
+      
+        // Split code text based on selected line
+        const lineIndex = oldCellCode.indexOf(oldLineCode);
+        const newCellCode = oldCellCode.slice(lineIndex);
+        oldCellCode = oldCellCode.slice(0, lineIndex);
+      
+        /*
+          Due to Pluto only allowing one line per cell, 
+          unless something like "begin ... end" is used,
+          and the fact that splitting a one line cell does
+          not make much sense, we will replicate the first
+          and last line of the old cell, into the new one.
+        */
+        oldCellCode.push(newCellCode.at(-1));
+        newCellCode.unshift(oldCellCode[0]);
+      
         // Create new cell
-        oldCell.querySelectorAll("button")[4].click();
-
-        // Get lines of code in current cell
-        const oldLines = Array.from(oldCell.querySelectorAll("div.cm-line"));
-        const firstLine = oldLines[0].cloneNode(true);
-        const lastLine = oldLines.at(-1).cloneNode(true);
-
-        // Separate code lines from which will be moved
-        let index;
-        for(index=0; index < oldLines.length; index++) {
-          if (oldLine === oldLines[index]) { break; }
-        }
-
-        // Get code lines to move and
-        // wrapper (begin ... end, for example)
-        // of cell to be splitted in two.
-        const newLines = oldLines.slice(index, oldLines.length - 1);
-
-        // Split selected cell
-        await new Promise(r => setTimeout(r, 123));
-        const newCell = oldCell.nextElementSibling.querySelector('[role="textbox"]');
-        newCell.firstElementChild.remove();
-        newCell.appendChild(firstLine);
-        newCell.appendChild(lastLine);
-
-        newLines.forEach(line => newCell.insertBefore(line, lastLine));
-
-        // Remove ;; from second code line and fix cell splitting issue
-        const nodes = [...newCell.children[1].childNodes];
-
-        index = 0;
-        for(index; index < nodes.length; index++) {
-          if (
-            nodes[index].nodeValue &&
-            [";;", ";;\t"].includes(nodes[index].nodeValue)
-          ) { break; }
-        }
-
-        const replacement = nodes.slice(index + 1, nodes.length)
-        nodes[index].remove();
-
-        const replacementContainer = nodes[0].parentElement.cloneNode(false);
-        replacement.forEach(line => replacementContainer.appendChild(line));
-        nodes[0].parentElement.after(replacementContainer);
-
-        await new Promise(r => setTimeout(r, 123));
-        replacementContainer.remove();
-        // replacementContainer.firstElementChild.innerText =
-          // "  " + replacementContainer.firstElementChild.innerText;
-      })()
+        oldCell.querySelector("button.add_cell.after").click();
+      
+        await new Promise(r => setTimeout(r, 500));
+        const newCell = oldCell.nextElementSibling;
+      
+        console.log(oldCellCode, newCellCode);
+      
+        // Update code in cells
+        oldCell.querySelector('[role="textbox"]').innerHTML = 
+          oldCellCode.map(line => `<div><span>${line}</span></div>`)
+            .join('');
+            
+        newCell.querySelector('[role="textbox"]').innerHTML = 
+          newCellCode.map(line => `<div><span>${line}</span></div>`)
+            .join('');
+        
+        return ;
+    })()
     }
   });
 })();
