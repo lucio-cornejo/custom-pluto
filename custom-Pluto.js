@@ -133,7 +133,10 @@
     Extract raw code from Pluto cell
   */
   function extractCellCode(plutoCell) {
-    const linesContainer = Array.from(plutoCell.children);
+    const linesContainer = Array.from(
+      plutoCell.querySelector("[role='textbox']")
+        .children
+    );
     
     let codeText = "";
     linesContainer.forEach(lineContainer => {
