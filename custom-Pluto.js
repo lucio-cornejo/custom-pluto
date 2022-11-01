@@ -129,6 +129,61 @@
     return [divStart, divEnd];
   }
 
+  /* 
+    Extract raw code from Pluto cell
+  */
+  function extractCellCode(plutoCell) {
+    const linesContainer = Array.from(plutoCell.children);
+    
+    let codeText = "";
+    linesContainer.forEach(lineContainer => {
+      lineContainer.childNodes.forEach(line => {
+        codeText += extractLineText(line);
+      });
+      codeText += "\n";
+    });
+    
+    function extractLineText(line) {
+      if (line.nodeName === "#text") return line.nodeValue;
+      
+      if (line.nodeName === "SPAN") {
+        // Case like <span><span>text</span></span> .
+        // Such HTML structure is sometimes triggered 
+        // automatically by Pluto for first and last cell lines.
+        if (line.classList.contains("cm-matchingBracket")) {
+          return extractLineText(line.firstChild);
+        }
+    
+        // Case where span elements are used to contain
+        // information about the code line, not the text itself.
+        if (line.childElementCount) return ""; 
+        
+        // Usual case: <span>text</span>
+        return line.innerText;
+      }
+    
+      // Case where the code text is inside a span element
+      // contained in a <pluto-variable-link> element.
+      if (line.nodeName === 'PLUTO-VARIABLE-LINK') {
+        return extractLineText(line.firstChild);
+      }
+      
+      return "";
+    }
+    
+    codeText = codeText.split("\n");
+    codeText.pop();
+    return codeText;
+    
+    /*
+    // Check that code text extraction is correct
+    linesContainer[0].parentElement.innerHTML = codeText
+      .map(line => `<div><span>${line}</span></div>`)
+      .join('');
+    */
+  }
+  
+
   /*
     When some keyboard two-keys combination is pressed.
     toggle insertion of two lines of code
