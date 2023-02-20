@@ -211,9 +211,7 @@
     // Specially deal with the cases where the
     // Alt, Control or Shift key was/were pressed
     const specialKeys = {
-      Alt: "altKey",
-      Control: "ctrlKey",
-      Shift: "shiftKey"
+      Alt: "altKey", Control: "ctrlKey", Shift: "shiftKey"
     }
     keys = keys.map(function(key) {
       return Object.keys(specialKeys).includes(key)
