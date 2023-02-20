@@ -1,3 +1,14 @@
+// ==UserScript==
+// @name         Custom Pluto
+// @namespace    http://tampermonkey.net/
+// @version      0.2
+// @description  Customize your Pluto notebook
+// @author       Lucio Cornejo
+// @match        *localhost:1234/*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=tampermonkey.net
+// @grant        none
+// ==/UserScript==
+
 (function() {
   'use strict';
   // Apply customization to notebook
