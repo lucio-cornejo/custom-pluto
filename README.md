@@ -43,7 +43,7 @@ html"""
   Implemented shortcut: `Alt+M`  
 
 - **Toggle cell's input visibilty**: \
-  Implemented shortcut: `Alt+C`  (Non VS Code)
+  Implemented shortcut: `Alt+V`  (Non VS Code)
 
 - **Toggle live documentation**: \
   Implemented shortcut: `Ctrl+Alt+D`  (Non VS Code?)
