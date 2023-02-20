@@ -1,14 +1,3 @@
-// ==UserScript==
-// @name         Custom Pluto
-// @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  Customize your Pluto notebook
-// @author       Lucio Cornejo
-// @match        *localhost:1234/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=tampermonkey.net
-// @grant        none
-// ==/UserScript==
-
 (function() {
   'use strict';
   // Apply customization to notebook
@@ -129,7 +118,7 @@
     return [divStart, divEnd];
   }
 
-  /* 
+  /*
     Extract raw code from Pluto cell
   */
   function extractCellCode(plutoCell) {
@@ -137,7 +126,7 @@
       plutoCell.querySelector("[role='textbox']")
         .children
     );
-    
+
     let codeText = "";
     linesContainer.forEach(lineContainer => {
       lineContainer.childNodes.forEach(line => {
@@ -145,11 +134,11 @@
       });
       codeText += "\n";
     });
-    
+
     codeText = codeText.split("\n");
     codeText.pop();
     return codeText;
-    
+
     /*
     // Check that code text extraction is correct
     linesContainer[0].parentElement.innerHTML = codeText
@@ -160,44 +149,86 @@
 
   function extractLineText(line) {
     if (line.nodeName === "#text") return line.nodeValue;
-    
+
     if (line.nodeName === "SPAN") {
       // Case like <span><span>text</span></span> .
-      // Such HTML structure is sometimes triggered 
+      // Such HTML structure is sometimes triggered
       // automatically by Pluto for first and last cell lines.
       if (line.classList.contains("cm-matchingBracket")) {
         return extractLineText(line.firstChild);
       }
-  
+
       // Case where span elements are used to contain
       // information about the code line, not the text itself.
-      if (line.childElementCount) return ""; 
-      
+      if (line.childElementCount) return "";
+
       // Usual case: <span>text</span>
       return line.innerText;
     }
-  
+
     // Case where the code text is inside a span element
     // contained in a <pluto-variable-link> element.
     if (line.nodeName === 'PLUTO-VARIABLE-LINK') {
       return extractLineText(line.firstChild);
     }
-    
+
     return "";
   }
 
   /*
-    When some keyboard two-keys combination is pressed.
-    toggle insertion of two lines of code
+    When some keyboard keys combination of the form
+    ("Alt" or "Control" or "Shift") +
+    "numeric_or_alphabetic key"
+    is pressed, toggle insertion of two lines of code
     into selected Pluto code cell.
   */
-  function keysAction(initialKeys, lastKey, eventKey, firstLine, lastLine) {
-    // Check that every key in initialKeys is currently pressed
-    const areAllPressed = initialKeys.every(
-      (key) => keyPress[key] === true
-    );
+  function keysAction(event, keys, firstLine, lastLine) {
+    /*
+      The keys parameter is an array of 2, 3 or 4 elements,
+      filled with ".key" values obtained after a keydown
+      event is registered by JavaScript.
 
-    if (areAllPressed && lastKey === eventKey) {
+      Such values can be obtained from this website:
+      https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values
+    */
+
+    // Example:
+    // keys = ["Alt", "s"] will be turned to ["altKey", "s"],
+    // where it is assumed that only the last element of the
+    // keys array is a key not in ["Alt", "Control", "Shift"].
+
+    // Specially deal with the cases where the
+    // Alt, Control or Shift key was/were pressed
+    const specialKeys = {
+      Alt: "altKey",
+      Control: "ctrlKey",
+      Shift: "shiftKey"
+    }
+    keys = keys.map(function(key) {
+      return Object.keys(specialKeys).includes(key)
+        ? specialKeys[key]
+        : key;
+    });
+
+    // Check if the specific keys combination defined
+    // by the keys array was pressed by the user.
+    const keysCombinationPressed =
+      keys.every((element, index) => {
+        // Case for non special key
+        if (index === keys.length - 1) {
+          // Was non special key (upper or lower case) pressed?
+          return event.key.toLowerCase() === element;
+          // Lower case is used due to sometimes
+          // the non special key being registered
+          // as upper case when other special keys
+          // are also being pressed.
+        } else {
+          // Was the special key pressed?
+          return event[element];
+        }
+      });
+
+    if (keysCombinationPressed) {
       const cellCode = getPlutoCell(getSelection().anchorNode)
         .querySelector("div[role='textbox'].cm-content");
 
@@ -245,73 +276,46 @@
       } else {
         cellCode.appendChild(endDiv);
       }
-
-      // Reset object
-      keyPress = {}; return;
     }
   }
-
-  /*
-    Multiple key presses
-  */
-  window["keyPress"] = {};
-
-  /*
-    When changing windows, sometimes
-    the keyup event is not registered
-    in the browser tab for Pluto.
-  */
-  window["lostKeyUp"] = 0;
-
-  document.addEventListener("keyup", function(evt) {
-    lostKeyUp = (lostKeyUp + 1)%2;
-    // delete keyPress[evt.key]
-    keyPress = {}; return;
-  });
 
   document.addEventListener("keydown", function (evt) {
     // Avoid keydown event repetition due to holding key
     if (evt.repeat) return;
-    lostKeyUp = (lostKeyUp + 1)%2;
-
-    // Case where there was a window change
-    // and at least some keyup event did not
-    // get registered in Pluto browser tab.
-    if (!lostKeyUp) {
-      // window["keyPress"] = {};
-      // window["lostKeyUp"] = false;
-    }
-
-    keyPress[evt.key] = true;
 
     /*
       Insert "begin ... end" code in Pluto cell
-      Keyboard shortcut: Ctrl+Alt+B
+      Keyboard shortcut: Control+Alt+b
     */
-    keysAction(["Control", "Alt"], "b", evt.key, "begin", "end");
+    keysAction(evt, ["Control", "Alt", "b"], "begin", "end");
 
     /*
       Insert "let ... end" code in Pluto cell
-      Keyboard shortcut: Ctrl+Alt+L
+      Keyboard shortcut: Control+Alt+l
     */
-    keysAction(["Control", "Alt"], "l", evt.key, "let", "end");
+    keysAction(evt, ["Control", "Alt", "l"], "let", "end");
 
     /*
       Insert "with_terminal() do ... end" code in Pluto cell
-      Keyboard shortcut: Ctrl+Alt+T
+      Keyboard shortcut: Control+Alt+t
     */
-    keysAction(["Control", "Alt"], "t", evt.key, "with_terminal() do", "end");
+    keysAction(evt, ["Control", "Alt", "t"], "with_terminal() do", "end");
 
     /*
       Insert 'md""" ... """' code in Pluto cell
-      Keyboard shortcut: Ctrl+Alt+M
+      Keyboard shortcut: Control+Alt+m
     */
-    keysAction(["Control", "Alt"], "m", evt.key, "md\"\"\"", "\"\"\"");
+    keysAction(evt, ["Control", "Alt", "m"], "md\"\"\"", "\"\"\"");
 
     /*
       Toggle visibility of markdown cells' code: Alt+m
     */
-    if (keyPress["Alt"] && "m" === evt.key) {
+    if (
+      evt.altKey &&
+      !evt.ctrlKey &&
+      !evt.shiftKey &&
+      evt.key.toLowerCase() === "m"
+    ) {
       document.querySelectorAll(
         "pluto-cell:has(pluto-output .markdown)"
       ).forEach(cell => {
@@ -326,40 +330,52 @@
     }
 
     /*
-      Toggle code cell visibility: Alt+c
+      Toggle code cell visibility: Alt+v
     */
-    if (keyPress["Alt"] && "c" === evt.key) {
+    if (
+      evt.altKey &&
+      !evt.ctrlKey &&
+      !evt.shiftKey &&
+      evt.key.toLowerCase() === "v"
+    ) {
       getPlutoCell(getSelection().anchorNode)
         .querySelector("button.foldcode").click();
-
-      // Reset object
-      keyPress = {}; return;
     }
 
     /*
       Add cell before: Control+Shift+Enter
     */
-    if (keyPress["Control"] && keyPress["Shift"] && "Enter" === evt.key) {
+    if (
+      !evt.altKey &&
+      evt.ctrlKey &&
+      evt.shiftKey &&
+      evt.key.toLowerCase() === "enter"
+    ) {
       getPlutoCell(getSelection().anchorNode).querySelector("button.add_cell.before").click();
-
-      // Reset object
-      keyPress = {}; return;
     }
 
     /*
       Add cell after: Alt+Enter
     */
-    if (keyPress["Alt"] && "Enter" === evt.key) {
-      getPlutoCell(getSelection().anchorNode).querySelector("button.add_cell.after").click();
-
-      // Reset object
-      keyPress = {}; return;
+    if (
+      evt.altKey &&
+      !evt.ctrlKey &&
+      !evt.shiftKey &&
+      evt.key.toLowerCase() === "enter"
+    ) {
+      getPlutoCell(getSelection().anchorNode)
+        .querySelector("button.add_cell.after").click();
     }
 
     /*
       Toggle live documentation: Control+Alt+d
     */
-    if (keyPress["Control"] && keyPress["Alt"] && "d" === evt.key) {
+    if (
+      evt.altKey &&
+      evt.ctrlKey &&
+      !evt.shiftKey &&
+      evt.key.toLowerCase() === "d"
+    ) {
       if (document.querySelector("pluto-helpbox header input")) {
         document.querySelector("pluto-helpbox").classList.toggle("hidden");
         document.querySelector("pluto-helpbox button").click();
@@ -372,7 +388,12 @@
     /*
       Split cell: Control+Alt+s
     */
-    if (keyPress["Control"] && keyPress["Alt"] && "s" === evt.key) {
+    if (
+      evt.altKey &&
+      evt.ctrlKey &&
+      !evt.shiftKey &&
+      evt.key.toLowerCase() === "s"
+    ) {
       (async function () {
         // Get code line where mouse is located
         let oldLine = getSelection().anchorNode;
@@ -380,26 +401,26 @@
         while (!oldLine.classList.contains("cm-line")) {
           oldLine = oldLine.parentElement
         }
-      
+
         // Extract code text from selected line
         let oldLineCode = "";
         oldLine.childNodes.forEach(node => {
           oldLineCode += extractLineText(node);
         });
-      
+
         oldLineCode;
-      
+
         // Extract code text from selected cell
         const oldCell = getPlutoCell(getSelection().anchorNode);
         let oldCellCode = extractCellCode(oldCell);
-      
+
         // Split code text based on selected line
         const lineIndex = oldCellCode.indexOf(oldLineCode);
         const newCellCode = oldCellCode.slice(lineIndex);
         oldCellCode = oldCellCode.slice(0, lineIndex);
-      
+
         /*
-          Due to Pluto only allowing one line per cell, 
+          Due to Pluto only allowing one line per cell,
           unless something like "begin ... end" is used,
           and the fact that splitting a one line cell does
           not make much sense, we will replicate the first
@@ -407,22 +428,22 @@
         */
         oldCellCode.push(newCellCode.at(-1));
         newCellCode.unshift(oldCellCode[0]);
-      
+
         // Create new cell
         oldCell.querySelector("button.add_cell.after").click();
-      
+
         await new Promise(r => setTimeout(r, 500));
         const newCell = oldCell.nextElementSibling;
-      
+
         // Update code in cells
-        oldCell.querySelector('[role="textbox"]').innerHTML = 
+        oldCell.querySelector('[role="textbox"]').innerHTML =
           oldCellCode.map(line => `<div><span>${line}</span></div>`)
             .join('');
-            
-        newCell.querySelector('[role="textbox"]').innerHTML = 
+
+        newCell.querySelector('[role="textbox"]').innerHTML =
           newCellCode.map(line => `<div><span>${line}</span></div>`)
             .join('');
-        
+
         return ;
     })()
     }
