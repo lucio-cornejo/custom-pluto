@@ -91,9 +91,8 @@ is inserted into the Pluto notebook via
 following JavaScript function:
   ```js
   keysAction(
-    initialKeys,  // Array of keyPressed.key values
-    lastKey,      // keyPressed.key value
-    eventKey,     // event.key
+    keydownEvent,  // event when some key is pressed
+    keys,          // Arrays of elemets of keys combination
     firstLine,    // Custom String
     lastLine      // Custom String
   )
@@ -105,12 +104,12 @@ following JavaScript function:
     Insert "begin ... end" code in Pluto cell
     Keyboard shortcut: Ctrl+Alt+B
   */
-  keysAction(["Control", "Alt"], "b", evt.key, "begin", "end");
+  keysAction(evt, ["Control", "Alt", "b"], "begin", "end");
   ```
 
   Such code must be inserted in the appropriate context ...
   a complete example can be found 
-  [here](https://github.com/lucio-cornejo/custom-pluto/blob/main/custom-Pluto.js#L216).
+  [here](https://github.com/lucio-cornejo/custom-pluto/blob/main/custom-Pluto.js#L297).
 
   You can get the `keyPressed.key` value of the key you want to use
   via executing the following code in your browser console 
