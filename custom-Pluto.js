@@ -40,7 +40,7 @@
     */
     // Fix padding issue in table of contents
     `a.H3 { padding-left: 20px !important; }
-    .toc-row a { white-space: normal; }
+    .toc-row a { white-space: normal !important; }
     /* .plutoui-toc.aside { left: 0; width: 10rem !important; } */ \n` +
 
     /*
