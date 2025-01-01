@@ -63,6 +63,20 @@
     }
     pluto-logs-container {
       background-color: black !important;
+    }\n` + 
+  
+    /*
+      Style custom buttons next to export button
+    */
+    `
+    .export-container-button {
+      color: crimson;
+      cursor: pointer;
+      margin-right: 2rem;
+      border-radius: 50px;
+      padding: 0.3rem 0.55rem;
+      background-color: white;
+      filter: drop-shadow(0 0 0.25rem var(--ui-button-color));
     }`;
 
   document.head.appendChild(customStyle);
@@ -74,17 +88,9 @@
 
   // Create button to toggle light and dark mode
   const toggleTheme = document.createElement("button");
-
   toggleTheme.innerText = "Toggle light/dark mode";
-  toggleTheme.style.cssText = `
-    color: crimson;
-    cursor: pointer;
-    margin-right: 2rem;
-    border-radius: 50px;
-    padding: 0.3rem 0.55rem;
-    background-color: white;
-    filter: drop-shadow(0 0 0.25rem var(--ui-button-color));
-  `
+  toggleTheme.classList.add('export-container-button');
+
   toggleTheme.onclick = function () {
     document.documentElement.style.setProperty(
       "--theme",
@@ -100,6 +106,7 @@
   // Source: https://discourse.julialang.org/t/adding-a-restart-process-button-in-pluto/76812/5
   const PlutoRestartButton = document.createElement("button");
   PlutoRestartButton.innerText = "Restart process";
+  PlutoRestartButton.classList.add('export-container-button');
 
 	PlutoRestartButton.onclick = () => {
 		editor_state_set(old_state => ({
