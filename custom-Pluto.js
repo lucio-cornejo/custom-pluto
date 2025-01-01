@@ -68,9 +68,11 @@
   document.head.appendChild(customStyle);
 
   /*
-    Add button to toggle light and dark mode
+    Insert buttons next to export button
   */
   const toggleExport = document.querySelector("#at_the_top .toggle_export");
+
+  // Create button to toggle light and dark mode
   const toggleTheme = document.createElement("button");
 
   toggleTheme.innerText = "Toggle light/dark mode";
@@ -91,9 +93,27 @@
           .getPropertyValue("--theme")
       ) + 1) % 2
     ))
-  }
-
+  };
   toggleExport.before(toggleTheme);
+
+  // Create button to reset Pluto notebook
+  // Source: https://discourse.julialang.org/t/adding-a-restart-process-button-in-pluto/76812/5
+  const PlutoRestartButton = document.createElement("button");
+  PlutoRestartButton.innerText = "Restart process";
+
+	PlutoRestartButton.onclick = () => {
+		editor_state_set(old_state => ({
+			notebook: {
+				...old_state.notebook,
+				process_status: "no_process",
+			},
+		})).then(() => {
+			window.requestAnimationFrame(() => {
+				document.querySelector("#process_status a").click()
+			})
+		})
+	};
+  toggleExport.before(PlutoRestartButton);
 
   /*
     Obtain pluto-cell HTML element
