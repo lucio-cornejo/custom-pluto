@@ -100,8 +100,7 @@
       ) + 1) % 2
     ))
   };
-  toggleExport.before(toggleTheme);
-
+  
   // Create button to reset Pluto notebook
   // Source: https://discourse.julialang.org/t/adding-a-restart-process-button-in-pluto/76812/5
   const PlutoRestartButton = document.createElement("button");
@@ -120,7 +119,12 @@
 			})
 		})
 	};
-  toggleExport.before(PlutoRestartButton);
+
+  // Avoid duplicating custom buttons
+  if (!document.querySelector(".export-container-button")) {
+    toggleExport.before(toggleTheme);
+    toggleExport.before(PlutoRestartButton);
+  }
 
   /*
     Obtain pluto-cell HTML element
