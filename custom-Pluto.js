@@ -63,8 +63,8 @@
     }
     pluto-logs-container {
       background-color: black !important;
-    }\n` + 
-  
+    }\n` +
+
     /*
       Style custom buttons next to export button
     */
@@ -72,7 +72,7 @@
     .export-container-button {
       color: crimson;
       cursor: pointer;
-      margin-right: 2rem;
+      margin-right: 1rem !important;
       border-radius: 50px;
       padding: 0.3rem 0.55rem;
       background-color: white;
