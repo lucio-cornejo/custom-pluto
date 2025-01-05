@@ -28,9 +28,12 @@
     */
     "html {filter: invert(var(--theme)); }\n" +
     // Do not alter to dark mode
-    `input, img,
+    `input, 
+    img,
     pluto-logs-container,
-    .plot-container, .plotly {
+    pluto-output:has(iframe),
+    .plot-container:not(:has(.plotly)), 
+    .plotly {
       filter: invert(var(--theme));
     }\n` +
     // Set tab size to 2
@@ -77,7 +80,17 @@
       padding: 0.3rem 0.55rem;
       background-color: white;
       filter: drop-shadow(0 0 0.25rem var(--ui-button-color));
-    }`;
+    }\n` + 
+
+    /*
+    */
+    `
+    pluto-tree-items iframe {
+      flex-direction: column;
+      width: min(500px, 90svw) !important;
+    }
+
+    `;
 
   document.head.appendChild(customStyle);
 
